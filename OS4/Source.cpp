@@ -168,7 +168,7 @@ void dump(string dumpName) {
 			dump << "	" << "|     "; dump << setw(3) << *index; dump << "      |" << endl;
 		}
 		dump << "	" << "----------------" << endl;
-		dump << "	" << "Info in file:\n" << readFromFile(it->name, it->type) << endl;
+		dump << "	" << "Info in file:\n	" << readFromFile(it->name, it->type) << endl;
 		dump << endl;
 	}
 	dump << "-----------------------" << endl;
