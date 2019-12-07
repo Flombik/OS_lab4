@@ -6,6 +6,8 @@
 #include <iomanip>
 
 #define MEMORY_SIZE 512
+#define NO_SUCH_FILE 1
+#define SUCCESS 0
 
 using namespace std;
 
@@ -35,36 +37,47 @@ void createFile(string fileName, string fileType) {
 	root.files.push_back(newFile);
 }
 
-void deleteFile(string fileName, string fileType) {
+int deleteFile(string fileName, string fileType) {
 	for (vector<file>::iterator it = root.files.begin(); it < root.files.end(); it++) {
 		if (it->name == fileName && it->type == fileType) {
 			for (vector<int>::iterator index = it->indexes.begin(); index < it->indexes.end(); index++) {
 				memory[*index].clear();
 			}
 			root.files.erase(it);
-			return;
+			return SUCCESS;
 		}
-
 	}
+	return NO_SUCH_FILE;
 }
 
-void copyFile(string fileName, string fileType) {
+int writeToFile(string fileName, string fileType, string data);
+string readFromFile(string fileName, string fileType);
+
+int copyFile(string fileName, string fileType) {
 	for (vector<file>::iterator it = root.files.begin(); it < root.files.end(); it++) {
 		if (it->name == fileName && it->type == fileType) {
-			createFile(it->name + "(copy)", it->type);
+			file newFile;
+			newFile.name = it->name + "(copy)";
+			newFile.type = it->type;
+			writeToFile(newFile.name, newFile.type, readFromFile(it->name, it->type));
+			root.files.push_back(newFile);
+			return SUCCESS;
 		}
 	}
+	return NO_SUCH_FILE;
 }
 
-void renameFile(string fileName, string fileType, string newFileName) {
+int renameFile(string fileName, string fileType, string newFileName) {
 	for (vector<file>::iterator it = root.files.begin(); it < root.files.end(); it++) {
 		if (it->name == fileName && it->type == fileType) {
 			it->name = newFileName;
+			return SUCCESS;
 		}
 	}
+	return NO_SUCH_FILE;
 }
 
-void writeToFile(string fileName, string fileType, string data) {
+int writeToFile(string fileName, string fileType, string data) {
 	for (vector<file>::iterator it = root.files.begin(); it < root.files.end(); it++) {
 		if (it->name == fileName && it->type == fileType) {
 			for (unsigned int i = 0; i < data.size(); i++) {
@@ -93,8 +106,10 @@ void writeToFile(string fileName, string fileType, string data) {
 				}
 				i += 6;
 			}
+			return SUCCESS;
 		}
 	}
+	return NO_SUCH_FILE;
 }
 
 string readFromFile(string fileName, string fileType) {
@@ -105,9 +120,9 @@ string readFromFile(string fileName, string fileType) {
 				temp += memory[*index];
 			}
 			temp += '\n';
+			return temp;
 		}
 	}
-	return temp;
 }
 
 void createÑast(string dumpName) {
@@ -195,18 +210,25 @@ int main() {
 		else if (request == "rm") {
 			string fileName_dot_Type;
 			cin >> fileName_dot_Type;
-			deleteFile(fileName_dot_Type.substr(0, fileName_dot_Type.find('.')),
-				fileName_dot_Type.substr(fileName_dot_Type.find('.') + 1, fileName_dot_Type.size()));
+			if (deleteFile(fileName_dot_Type.substr(0, fileName_dot_Type.find('.')),
+				fileName_dot_Type.substr(fileName_dot_Type.find('.') + 1, fileName_dot_Type.size())) == NO_SUCH_FILE) {
+				cout << "Can't delete file. No such file" << endl;
+			}
 		}
 		else if (request == "dir") {
 			dir();
 		}
 		else if (request == "write") {
-			string fileName_dot_Type, data;
+			string fileName_dot_Type, input;
 			cin >> fileName_dot_Type;
-			cin >> data;
-			writeToFile(fileName_dot_Type.substr(0, fileName_dot_Type.find('.')),
-				fileName_dot_Type.substr(fileName_dot_Type.find('.') + 1, fileName_dot_Type.size()), data);
+			cin >> input;
+			//int first_qoute = input.find('\"');
+			//int last_qoute = input.find('\"');
+			if (writeToFile(fileName_dot_Type.substr(0, fileName_dot_Type.find('.')),
+				fileName_dot_Type.substr(fileName_dot_Type.find('.') + 1, fileName_dot_Type.size()), input
+			/*input.substr(first_qoute + 1, last_qoute - first_qoute)*/) == NO_SUCH_FILE) {
+				cout << "Can't write to file. No such file" << endl;
+			}
 		}
 		else if (request == "read") {
 			string fileName_dot_Type;
@@ -217,16 +239,20 @@ int main() {
 		else if (request == "copy") {
 			string fileName_dot_Type;
 			cin >> fileName_dot_Type;
-			copyFile(fileName_dot_Type.substr(0, fileName_dot_Type.find('.')),
-				fileName_dot_Type.substr(fileName_dot_Type.find('.') + 1, fileName_dot_Type.size()));
+			if (copyFile(fileName_dot_Type.substr(0, fileName_dot_Type.find('.')),
+				fileName_dot_Type.substr(fileName_dot_Type.find('.') + 1, fileName_dot_Type.size())) == NO_SUCH_FILE) {
+				cout << "Can't copy file. No such file" << endl;
+			}
 		}
 		else if (request == "move") {
 			string fileName_dot_Type, newFileName;
 			cin >> fileName_dot_Type;
 			cin >> newFileName;
-			renameFile(fileName_dot_Type.substr(0, fileName_dot_Type.find('.')),
+			if (renameFile(fileName_dot_Type.substr(0, fileName_dot_Type.find('.')),
 				fileName_dot_Type.substr(fileName_dot_Type.find('.') + 1, fileName_dot_Type.size()),
-				newFileName);
+				newFileName) == NO_SUCH_FILE) {
+				cout << "Can't rename file. No such file" << endl;
+			}
 		}
 		else if (request == "dump") {
 			string dumpName;
@@ -244,9 +270,9 @@ int main() {
 			loadFromÑast(dumpName);
 		}*/
 		else if (request == "help") {
-			cout << "dir	" << endl;
-			cout << "cr		create file" << endl;
-			cout << "rm		remove file" << endl;
+			cout << "dir	Show all files in directory" << endl;
+			cout << "cr	create file" << endl;
+			cout << "rm	remove file" << endl;
 			cout << "move	rename file" << endl;
 			cout << "copy	copy file" << endl;
 			cout << "write	write data to file" << endl;
