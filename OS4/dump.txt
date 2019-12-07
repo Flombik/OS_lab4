@@ -1,51 +1,37 @@
 root>
-	tanya.txt
+	2.txt
+	----------------
+	| indexes      |
+	----------------
+	|       1      |
+	----------------
+	Info in file:
+	bbbbbbbb
+
+	3.txt
 	----------------
 	| indexes      |
 	----------------
 	|       0      |
-	|       1      |
 	|       2      |
-	|       3      |
 	----------------
 	Info in file:
-	sdafghjklgfdsajdhfbgnvcxlkdsfhbs
-
-
-	test.txt
-	----------------
-	| indexes      |
-	----------------
-	----------------
-	Info in file:
-	
-
-
-	aga.txt
-	----------------
-	| indexes      |
-	----------------
-	|       4      |
-	|       5      |
-	----------------
-	Info in file:
-	pasha-loh
-
+	cccccccccccccccc
 
 -----------------------
 |  Memory table state |
 -----------------------
-|         0|  sdafghjk|
+|         0|  cccccccc|
 -----------------------
-|         1|  lgfdsajd|
+|         1|  bbbbbbbb|
 -----------------------
-|         2|  hfbgnvcx|
+|         2|  cccccccc|
 -----------------------
-|         3|  lkdsfhbs|
+|         3|          |
 -----------------------
-|         4|  pasha-lo|
+|         4|          |
 -----------------------
-|         5|         h|
+|         5|          |
 -----------------------
 |         6|          |
 -----------------------
